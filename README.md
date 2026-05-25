@@ -127,7 +127,7 @@ CONSTRAINT inventory_fk_products FOREIGN KEY(product_id) REFERENCES products(pro
 ```
 ---
 
-#### **Inserting data into tables**
+#### **Uploading bulk data into tables**
 
 ```sql
 -- Category Table
