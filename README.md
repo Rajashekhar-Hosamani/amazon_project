@@ -132,7 +132,7 @@ CONSTRAINT inventory_fk_products FOREIGN KEY(product_id) REFERENCES products(pro
 ```sql
 -- Category Table
 BULK INSERT category_table
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\category_table.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\category_table.csv'
 WITH
 (
 FORMAT = 'CSV',
@@ -144,7 +144,7 @@ TABLOCK
 
 -- Customers Table
 BULK INSERT customers
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\customers.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\customers.csv'
 WITH
 (
 FORMAT = 'CSV',			
@@ -156,7 +156,7 @@ TABLOCK
 
 -- Inventory Table
 BULK INSERT inventory
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\inventory.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\inventory.csv'
 WITH
 (
 FORMAT = 'CSV',
@@ -168,7 +168,7 @@ TABLOCK
 
 -- Order_item Table
 BULK INSERT order_items
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\order_items.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\order_items.csv'
 WITH
 (
 FORMAT = 'CSV',
@@ -180,7 +180,7 @@ TABLOCK
 
 -- Order Table
 BULK INSERT orders
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\orders.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\orders.csv'
 WITH 
 (
 FORMAT = 'CSV',
@@ -192,7 +192,7 @@ TABLOCK
 
 -- Payments Table
 BULK INSERT payments
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\payments.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\payments.csv'
 WITH
 (
 FORMAT = 'CSV',
@@ -204,7 +204,7 @@ TABLOCK
 
 -- Products Table
 BULK INSERT products
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\products.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\products.csv'
 WITH
 (
 FORMAT = 'CSV',
@@ -216,7 +216,7 @@ TABLOCK
 
 -- Sellers Table
 BULK INSERT sellers
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\sellers.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\sellers.csv'
 WITH 
 (
 FORMAT = 'CSV',
@@ -231,7 +231,7 @@ SET DATEFORMAT dmy;  -- Tells SQL to interpret 22-06-2023 as June 22nd
 GO
 
 BULK INSERT shipping
-FROM 'C:\Users\91953\OneDrive\1 - DATA ANALYSIS\5 - Projects\Zero Analyst\3 - Amazon Project\Resources\Dataset\shipping.csv'
+FROM 'C:\Users\91953\OneDrive\3 - Amazon Project\Resources\Dataset\shipping.csv'
 WITH
 (
 FORMAT = 'CSV',
