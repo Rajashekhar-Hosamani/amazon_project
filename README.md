@@ -29,7 +29,7 @@ CREATE DATABASE Amazon_db;
 
 ### **Schema Structure**
 
-# **Tables creation**
+#### **Tables creation**
 ```sql
 -- category TABLE
 CREATE TABLE category
