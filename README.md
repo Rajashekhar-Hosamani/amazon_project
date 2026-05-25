@@ -25,6 +25,7 @@ An ERD diagram is included to visually represent the database schema and relatio
 ```sql
 DROP DATABASE IF EXISTS Amazon_db;
 CREATE DATABASE Amazon_db;
+```
 
 ### **Schema Structure**
 
