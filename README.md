@@ -18,6 +18,8 @@ An ERD diagram is included to visually represent the database schema and relatio
 
 ![ERD](Amazon_ERD.jpeg)
 
+---
+
 ## **Database Setup & Design**
 
 ### **Schema Structure**
@@ -125,7 +127,6 @@ last_stock_date DATE,
 CONSTRAINT inventory_fk_products FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
 ```
----
 
 #### **Uploading bulk data into tables**
 
@@ -241,7 +242,6 @@ ROWTERMINATOR = '\n',
 TABLOCK
 );
 ```
----
 
 #### **Database exploration**
 
@@ -339,9 +339,57 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'shipping';
 ```
 
----
 #### **Creating Duplicates**
+
 ```sql
+
+-- Category Table
+SELECT * 
+INTO category_table_staging
+FROM category_table;
+
+-- Customers Table
+SELECT * 
+INTO customers_staging
+FROM customers;
+
+-- Inventory Table
+SELECT *
+INTO inventory_staging
+FROM inventory;
+
+-- Order_item Table
+SELECT * 
+INTO order_items_staging
+FROM order_items;
+
+-- Order Table
+SELECT *
+INTO orders_staging
+FROM orders;
+
+-- Payment Table
+SELECT * 
+INTO payments_staging
+FROM payments;
+
+-- Product Table
+SELECT *
+INTO products_staging
+FROM products;
+
+-- Sellers Table
+SELECT * 
+INTO sellers_staging
+FROM sellers;
+
+-- Shipping Table
+SELECT * 
+INTO shipping_staging
+FROM shipping;
+```
+
+
 
 
 
