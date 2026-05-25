@@ -388,12 +388,60 @@ SELECT *
 INTO shipping_staging
 FROM shipping;
 ```
+#### **Assigning Primary key & Foreign keys to all duplicate tables**
 
+-- Customer Table
+ALTER TABLE customers_staging
+ADD CONSTRAINT PK_customers_staging PRIMARY KEY (customer_id);
 
+-- Sellers Table
+ALTER TABLE sellers_staging
+ADD CONSTRAINT PK_sellers_staging PRIMARY KEY (seller_id);
 
+-- Category Table
+ALTER TABLE category_table_staging
+ADD CONSTRAINT PK_category_table_staging PRIMARY KEY (category_id);
 
+-- Products Table
+ALTER TABLE products_staging
+ADD CONSTRAINT PK_products_staging PRIMARY KEY (product_id), 
+	CONSTRAINT products_staging_fk_category_table_staging 
+	FOREIGN KEY(category_id) REFERENCES category_table_staging(category_id);
 
+-- Order Table
+ALTER TABLE orders_staging
+ADD CONSTRAINT PK_orders_staging PRIMARY KEY (order_id),
+	CONSTRAINT orders_staging_fk_customers_staging 
+	FOREIGN KEY(customer_id) REFERENCES customers_staging(customer_id),
+	CONSTRAINT orders_staging_fk_sellers_staging 
+	FOREIGN KEY(seller_id) REFERENCES sellers_staging(seller_id);
 
+-- Order_item Table
+ALTER TABLE order_items_staging
+ADD CONSTRAINT PK_order_items_staging PRIMARY KEY (order_item_id),
+	CONSTRAINT order_items_staging_fk_orders_staging 
+	FOREIGN KEY(order_id) REFERENCES orders_staging(order_id),
+	CONSTRAINT order_items_staging_fk_products_staging 
+	FOREIGN KEY(product_id) REFERENCES products_staging(product_id);
+
+-- Payment Table
+ALTER TABLE payments_staging
+ADD CONSTRAINT PK_payments_staging PRIMARY KEY (payment_id),
+	CONSTRAINT payments_staging_fk_orders_staging 
+	FOREIGN KEY(order_id) REFERENCES orders_staging(order_id);
+
+-- Shipping Table
+ALTER TABLE shipping_staging
+ADD CONSTRAINT PK_shipping_staging PRIMARY KEY (shipping_id),
+	CONSTRAINT shipping_staging_fk_orders_staging 
+	FOREIGN KEY(order_id) REFERENCES orders_staging(order_id);
+
+-- Inventory Table
+ALTER TABLE inventory_staging
+ADD CONSTRAINT PK_inventory_staging PRIMARY KEY (inventory_id),
+	CONSTRAINT inventory_staging_fk_products_staging 
+	FOREIGN KEY(product_id) REFERENCES products_staging(product_id);
+```
 ---
 
 ## **Task: Data Cleaning**
