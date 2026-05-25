@@ -125,6 +125,8 @@ last_stock_date DATE,
 CONSTRAINT inventory_fk_products FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
 ```
+---
+
 #### **Inserting data into tables**
 
 
