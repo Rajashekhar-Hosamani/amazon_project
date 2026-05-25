@@ -339,7 +339,7 @@ FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME = 'shipping';
 ```
 
-#### **Creating Duplicates**
+#### **Creating Duplicate Tables**
 
 ```sql
 
@@ -450,7 +450,6 @@ ADD CONSTRAINT PK_inventory_staging PRIMARY KEY (inventory_id),
 #### **Removing leading & trailing spaces**
 
 ```sql
-
 -- Category_table_staging Table
 UPDATE category_table_staging
 SET category_name = TRIM(category_name);
@@ -500,10 +499,306 @@ SET @SQL = LEFT(@SQL, LEN(@SQL) - 1);
 
 -- Execute the update
 EXEC sp_executesql @SQL;
-
 ```
-####
-- **Removing duplicates**: Duplicates in the customer and order tables were identified and removed.
+
+#### **Removing duplicates**
+```sql
+
+-- Customers_staging Table
+SELECT
+	customer_id,
+	COUNT(*) AS Row_Count
+FROM customers_staging
+GROUP BY customer_id
+HAVING COUNT(customer_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY customer_id, first_name, last_name, state, address 
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM customers_staging;
+
+--
+WITH Duplicate_customers_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY customer_id, first_name, last_name, state, address 
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM customers_staging
+)
+SELECT * 
+FROM Duplicate_customers_staging_CTE
+WHERE Row_Count > 1;
+
+-- Inventory_staging Table
+SELECT
+	inventory_id,
+	COUNT(*) AS Row_Count
+FROM inventory_staging
+GROUP BY inventory_id
+HAVING COUNT(inventory_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY inventory_id, product_id, stock, warehouse_id, last_stock_date
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM inventory_staging;
+
+--
+WITH Duplicate_inventory_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY inventory_id, product_id, stock, warehouse_id, last_stock_date
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM inventory_staging
+)
+SELECT * 
+FROM Duplicate_inventory_staging_CTE
+WHERE Row_Count > 1
+
+-- Order_items_staging Table
+SELECT
+	order_item_id,
+	COUNT(*) AS Row_Count
+FROM order_items_staging
+GROUP BY order_item_id
+HAVING COUNT(order_item_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY order_item_id, order_id, product_id, quantity, price_per_unit
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM order_items_staging;
+
+--
+WITH Duplicate_order_items_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY order_item_id, order_id, product_id, quantity, price_per_unit
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM order_items_staging
+)
+SELECT * 
+FROM Duplicate_order_items_staging_CTE 
+WHERE Row_Count > 1;
+
+-- Orders_staging Table
+SELECT
+	order_id,
+	COUNT(*) AS Row_Count
+FROM orders_staging
+GROUP BY order_id
+HAVING COUNT(order_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY order_id, order_date, customer_id, seller_id, order_status
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM orders_staging;
+
+--
+WITH Duplicate_orders_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY order_id, order_date, customer_id, seller_id, order_status
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM orders_staging
+)
+SELECT * 
+FROM Duplicate_orders_staging_CTE 
+WHERE Row_Count > 1;
+
+-- Payments_staging Table
+SELECT
+	payment_id,
+	COUNT(*) AS Row_Count
+FROM payments_staging
+GROUP BY payment_id
+HAVING COUNT(payment_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY payment_id, order_id, payment_date, payment_status
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM payments_staging;
+
+--
+WITH Duplicate_payments_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY payment_id, order_id, payment_date, payment_status
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM payments_staging
+)
+SELECT * 
+FROM Duplicate_payments_staging_CTE
+WHERE Row_Count > 1
+
+-- Products_staging Table
+SELECT
+	product_id,
+	COUNT(*) AS Row_Count
+FROM products_staging
+GROUP BY product_id
+HAVING COUNT(product_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY product_id, product_name, price, cogs, category_id
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM products_staging;
+
+--
+WITH Duplicate_products_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY product_id, product_name, price, cogs, category_id
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM products_staging
+)
+SELECT * 
+FROM Duplicate_products_staging_CTE
+WHERE Row_Count > 1;
+
+-- Sellers_staging Table 
+SELECT
+	seller_id,
+	COUNT(*) AS Row_Count
+FROM sellers_staging
+GROUP BY seller_id
+HAVING COUNT(seller_id) > 1;
+
+-- OR
+SELECT 
+	*, 
+	ROW_NUMBER() OVER(PARTITION BY seller_id, seller_name, origin
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM sellers_staging;
+
+--
+WITH Duplicate_sellers_staging_CTE AS
+(
+SELECT 
+	*, 
+	ROW_NUMBER() OVER(PARTITION BY seller_id, seller_name, origin
+	ORDER BY (SELECT NULL)) AS Row_Count
+FROM sellers_staging
+)
+SELECT * 
+FROM Duplicate_sellers_staging_CTE
+WHERE Row_Count > 1;
+
+-- Shipping_staging Table
+SELECT
+	shipping_id,
+	COUNT(*) AS Row_Count
+FROM shipping_staging
+GROUP BY shipping_id
+HAVING COUNT(shipping_id) > 1;
+
+-- OR
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY shipping_id, order_id, shipping_date, return_date, shipping_providers, 
+	delivery_status ORDER BY (SELECT NULL)) AS Row_Count
+FROM shipping_staging;
+
+--
+WITH Duplicate_shipping_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY shipping_id, order_id, shipping_date, return_date, shipping_providers, 
+	delivery_status ORDER BY (SELECT NULL)) AS Row_Count
+FROM shipping_staging
+)
+SELECT *
+FROM Duplicate_shipping_staging_CTE
+WHERE Row_Count > 1;
+
+-- Below is the pre-defined query to find the duplicates
+DECLARE @ColumnList NVARCHAR(MAX);
+DECLARE @DynamicSQL NVARCHAR(MAX);
+
+-- 1. Build the comma-separated list of columns automatically
+SELECT @ColumnList = STRING_AGG(QUOTENAME(COLUMN_NAME), ', ')
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'shipping_staging'; --REPLACE THE TABLE NAME
+
+-- 2. Construct the CTE query using the auto-generated column list
+SET @DynamicSQL = '
+WITH duplicate_cte AS (
+    SELECT 
+        *,	
+        ROW_NUMBER() OVER(
+            PARTITION BY ' + @ColumnList + ' 
+            ORDER BY (SELECT NULL)
+        ) AS Row_Count 
+    FROM shipping_staging --REPLACE THE TABLE NAME
+)
+SELECT * FROM duplicate_cte WHERE Row_Count > 1;';
+
+-- 3. Execute the query
+EXEC sp_executesql @DynamicSQL;
+
+-- Deleting the duplicate values
+WITH Duplicate_shipping_staging_CTE AS
+(
+SELECT 
+	*,
+	ROW_NUMBER() OVER(PARTITION BY shipping_id, order_id, shipping_date, return_date, shipping_providers, 
+	delivery_status ORDER BY (SELECT NULL)) AS Row_Count
+FROM shipping_staging
+)
+DELETE
+FROM Duplicate_shipping_staging_CTE
+WHERE Row_Count > 1;
+
+-- Below pre-defined query is to delete duplicates
+DECLARE @ColumnList NVARCHAR(MAX);
+DECLARE @DynamicSQL NVARCHAR(MAX);
+
+-- 1. Get all column names from the staging table automatically
+SELECT @ColumnList = STRING_AGG(QUOTENAME(COLUMN_NAME), ', ')
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'shipping_staging'; --REPLACE THE TABLE NAME
+
+-- 2. Build the Dynamic DELETE statement using a CTE
+SET @DynamicSQL = '
+WITH delete_duplicate_cte AS (
+    SELECT 
+        ROW_NUMBER() OVER(
+            PARTITION BY ' + @ColumnList + ' 
+            ORDER BY (SELECT NULL)
+        ) AS Row_Count 
+    FROM shipping_staging --REPLACE THE TABLE NAME
+)
+DELETE FROM delete_duplicate_cte WHERE Row_Count > 1;';
+
+-- 3. Execute the cleanup
+EXEC sp_executesql @DynamicSQL;
+
+-- Optional: Check how many rows are left
+SELECT COUNT(*) AS Remaining_Rows FROM shipping_staging;
+
+
+
+
+
+
+
 - **Handling missing values**: Null values in critical fields (e.g., customer address, payment status) were either filled with default values or handled using appropriate methods.
 
 ---
