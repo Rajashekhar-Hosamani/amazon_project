@@ -245,9 +245,9 @@ TABLOCK
 
 #### **Database exploration**
 
+```sql
 -- Table Details 
 
-```sql
 SELECT
 	TABLE_CATALOG,
 	TABLE_NAME,
