@@ -29,7 +29,9 @@ CREATE DATABASE Amazon_db;
 
 ### **Schema Structure**
 
+# **Tables creation**
 ```sql
+-- category TABLE
 CREATE TABLE category
 (
   category_id	INT PRIMARY KEY,
