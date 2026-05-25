@@ -391,25 +391,25 @@ FROM shipping;
 #### **Assigning Primary key & Foreign keys to all duplicate tables**
 
 ```sql
--- Customer Table
+-- Customers_staging Table
 ALTER TABLE customers_staging
 ADD CONSTRAINT PK_customers_staging PRIMARY KEY (customer_id);
 
--- Sellers Table
+-- Sellers_staging Table
 ALTER TABLE sellers_staging
 ADD CONSTRAINT PK_sellers_staging PRIMARY KEY (seller_id);
 
--- Category Table
+-- Category_table_staging Table
 ALTER TABLE category_table_staging
 ADD CONSTRAINT PK_category_table_staging PRIMARY KEY (category_id);
 
--- Products Table
+-- Products_staging Table
 ALTER TABLE products_staging
 ADD CONSTRAINT PK_products_staging PRIMARY KEY (product_id), 
 	CONSTRAINT products_staging_fk_category_table_staging 
 	FOREIGN KEY(category_id) REFERENCES category_table_staging(category_id);
 
--- Order Table
+-- Orders_staging Table
 ALTER TABLE orders_staging
 ADD CONSTRAINT PK_orders_staging PRIMARY KEY (order_id),
 	CONSTRAINT orders_staging_fk_customers_staging 
@@ -417,7 +417,7 @@ ADD CONSTRAINT PK_orders_staging PRIMARY KEY (order_id),
 	CONSTRAINT orders_staging_fk_sellers_staging 
 	FOREIGN KEY(seller_id) REFERENCES sellers_staging(seller_id);
 
--- Order_item Table
+-- Order_items_staging Table
 ALTER TABLE order_items_staging
 ADD CONSTRAINT PK_order_items_staging PRIMARY KEY (order_item_id),
 	CONSTRAINT order_items_staging_fk_orders_staging 
@@ -425,19 +425,19 @@ ADD CONSTRAINT PK_order_items_staging PRIMARY KEY (order_item_id),
 	CONSTRAINT order_items_staging_fk_products_staging 
 	FOREIGN KEY(product_id) REFERENCES products_staging(product_id);
 
--- Payment Table
+-- Payments_staging Table
 ALTER TABLE payments_staging
 ADD CONSTRAINT PK_payments_staging PRIMARY KEY (payment_id),
 	CONSTRAINT payments_staging_fk_orders_staging 
 	FOREIGN KEY(order_id) REFERENCES orders_staging(order_id);
 
--- Shipping Table
+-- Shipping_staging Table
 ALTER TABLE shipping_staging
 ADD CONSTRAINT PK_shipping_staging PRIMARY KEY (shipping_id),
 	CONSTRAINT shipping_staging_fk_orders_staging 
 	FOREIGN KEY(order_id) REFERENCES orders_staging(order_id);
 
--- Inventory Table
+-- Inventory_staging Table
 ALTER TABLE inventory_staging
 ADD CONSTRAINT PK_inventory_staging PRIMARY KEY (inventory_id),
 	CONSTRAINT inventory_staging_fk_products_staging 
@@ -447,7 +447,62 @@ ADD CONSTRAINT PK_inventory_staging PRIMARY KEY (inventory_id),
 
 ## **Task: Data Cleaning**
 
-I cleaned the dataset by:
+#### **Removing leading & trailing spaces**
+
+```sql
+
+-- Category_table_staging Table
+UPDATE category_table_staging
+SET category_name = TRIM(category_name);
+
+-- Customers_staging Table
+UPDATE customers_staging
+SET
+	first_name = TRIM(first_name),
+	last_name = TRIM(last_name),
+	state = TRIM(state),
+	address = TRIM(address);
+
+-- Orders_staging Table
+UPDATE orders_staging
+SET order_status = TRIM(order_status);
+
+-- Payments_staging Table
+UPDATE payments_staging
+SET payment_status = TRIM(payment_status);
+
+-- Products_staging Table
+UPDATE products_staging
+SET product_name = TRIM(product_name); 
+
+-- Sellers_staging Table
+UPDATE sellers_staging
+SET 
+	seller_name = TRIM(seller_name),
+	origin = TRIM(origin);
+
+-- Shipping_staging Table
+UPDATE shipping_staging
+SET 
+	shipping_providers = TRIM(shipping_providers),
+	delivery_status = TRIM(delivery_status);
+
+-- Removing all leading & trailing spaces using below pre-defined query
+DECLARE @SQL NVARCHAR(MAX) = 'UPDATE shipping_staging SET '; --REPLACE TABLE NAME
+
+SELECT @SQL = @SQL + QUOTENAME(COLUMN_NAME) + ' = TRIM(' + QUOTENAME(COLUMN_NAME) + '), '
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_NAME = 'shipping_staging' --REPLACE TABLE NAME
+  AND DATA_TYPE IN ('varchar', 'nvarchar', 'char', 'nchar');
+
+-- Remove the trailing comma and space
+SET @SQL = LEFT(@SQL, LEN(@SQL) - 1);
+
+-- Execute the update
+EXEC sp_executesql @SQL;
+
+```
+####
 - **Removing duplicates**: Duplicates in the customer and order tables were identified and removed.
 - **Handling missing values**: Null values in critical fields (e.g., customer address, payment status) were either filled with default values or handled using appropriate methods.
 
