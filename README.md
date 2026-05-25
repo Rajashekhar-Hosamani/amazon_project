@@ -390,6 +390,7 @@ FROM shipping;
 ```
 #### **Assigning Primary key & Foreign keys to all duplicate tables**
 
+```sql
 -- Customer Table
 ALTER TABLE customers_staging
 ADD CONSTRAINT PK_customers_staging PRIMARY KEY (customer_id);
